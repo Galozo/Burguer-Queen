@@ -7,7 +7,7 @@ import { GetProductById, GetProductsByCategory } from './products.actions';
 
 export class ProductsStateModel {
   products: Product[];
-  product: Product[];
+  product: Product;
 }
 
 const defaults = {
@@ -47,6 +47,12 @@ export class ProductsState {
 
   @Action(GetProductById)
   getProductById({ getState, setState }: StateContext<ProductsStateModel>, { payload }: GetProductById) {
-    const state = getState();
+    return this.productService.getProductById(payload.id).then((product: Product) => {
+      const state = getState();
+      setState({
+        ...state,
+        product
+      })
+    })
   }
 }

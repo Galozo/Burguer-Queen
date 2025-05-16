@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { IonicModule, LoadingController, NavController, NavParams } from '@ionic/angular'; // Importa IonicModule
 import { CommonModule } from '@angular/common'; // Importa CommonModule
 import { Category } from 'src/app/models/category';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GetCategories } from 'src/app/state/categories/categories.actions';
 import { CategoriesState } from 'src/app/state/categories/categories.state';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-categories',
@@ -15,7 +16,10 @@ import { CategoriesState } from 'src/app/state/categories/categories.state';
   styleUrls: ['./categories.page.scss'],
   imports: [IonicModule, CommonModule, TranslateModule] // Asegúrate de agregar estos módulos
 })
-export class CategoriesPage implements OnInit {
+export class CategoriesPage  {
+
+   @Select(CategoriesState.categories)
+  private categories$: Observable<Category[]>;
 
   public categories : Category[];
 
@@ -29,9 +33,11 @@ export class CategoriesPage implements OnInit {
     this.categories = [];
   }
 
-  ngOnInit() {
+  ionViewWillEnter(){
     this.loadData();
   }
+
+
 
   async loadData () {
 
@@ -43,14 +49,14 @@ export class CategoriesPage implements OnInit {
 
     
 
-    this.store.dispatch(new GetCategories()).subscribe({
+    this.store.dispatch(new GetCategories());
+    this.categories$.subscribe({
       next: () => {
         this.categories = this.store.selectSnapshot(CategoriesState.categories);
         console.log(this.categories);
+        loading.dismiss();
       }, error: (err) => {
         console.error(err);
-      },
-      complete: () => {
         loading.dismiss();
       }
     })
@@ -63,5 +69,11 @@ export class CategoriesPage implements OnInit {
 
   }
 
+  refreshCategories($event) {
+
+    this.store.dispatch(new GetCategories());
+
+    $event.target.complete();
+  }
 }
 

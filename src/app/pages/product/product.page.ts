@@ -5,6 +5,9 @@ import { Product } from 'src/app/models/product';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { ProductExtraOption } from 'src/app/models/product-extra-option';
+import { Store } from '@ngxs/store';
+import { GetProductById } from 'src/app/state/products/products.actions';
+import { ProductsState } from 'src/app/state/products/products.state';
 
 @Component({
   selector: 'app-product',
@@ -13,20 +16,28 @@ import { ProductExtraOption } from 'src/app/models/product-extra-option';
   styleUrls: ['./product.page.scss'],
   imports: [IonicModule, CommonModule, TranslateModule,  FormsModule,] // Asegúrate de agregar estos módulos
 })
-export class ProductPage implements OnInit {
+export class ProductPage {
 
   public product: Product;
+  public total: number;
 
 
   constructor(
     private navController: NavController,
-    private navParams: NavParams
+    private navParams: NavParams,
+    private store: Store
   ) { 
-    console.log(this.navParams.data['product']);
-    this.product = this.navParams.data['product'];
+    this.product = null;
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
+
+    console.log(this.navParams.data['product']);
+    this.product = this.navParams.data['product'];
+
+    if(this.product && this.product.extras) {
+      this.total = this.product.price;
+    }
 
 
     if(!this.product){
@@ -35,12 +46,47 @@ export class ProductPage implements OnInit {
 
   }
 
+
   changeMultipleOption($event, options: ProductExtraOption[]) {
-    console.log($event);
 
     options.forEach(op => op.activate = $event.detail.value == op.name);
 
-    console.log(options);
+    this.calculateTotal();
+  }
+
+  calculateTotal() {
+
+    let total = this.product.price;
+
+    this.product.extras.forEach(extra => {
+      extra.blocks.forEach(block => {
+        if(block.options.length == 1 && block.options[0].activate) {
+          total+=block.options[0].price;
+        }else if (block.options.length > 1) {
+          const option = block.options.find(op => op.activate);
+          if (option) {
+            total += option.price;
+          }
+        }
+      })
+    })
+
+    this.total = + total.toFixed(2);
+
+  }
+
+
+  getProduct($event) {
+
+    this.store.dispatch(new GetProductById({id : this.product._id})).subscribe({
+      next: () => {
+        this.product = this.store.selectSnapshot(ProductsState.product);
+        this.calculateTotal();
+      },
+      complete: () => {
+        $event.target.complete();
+      }
+    })
   }
 
 }
