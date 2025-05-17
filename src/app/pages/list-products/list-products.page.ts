@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./list-products.page.scss'],
   imports: [IonicModule, CommonModule, TranslateModule] // Asegúrate de agregar estos módulos
 })
-export class ListProductsPage {
+export class ListProductsPage implements OnInit {
 
   @Select(ProductsState.products)
   private products$: Observable<Product[]>;
@@ -31,15 +31,20 @@ export class ListProductsPage {
     private loadingController: LoadingController,
     private translate: TranslateService
   ) {
+    console.log(this.navParams.data['idCategory']);
+    this.idCategory = this.navParams.data['idCategory'];
     this.products = [];
   }
 
-  async ionViewWillEnter(){
+  ionViewWillEnter(){
+
+    
+
+  }
+
+  async ngOnInit() {
 
     if (this.idCategory){
-
-      console.log(this.navParams.data['idCategory']);
-      this.idCategory = this.navParams.data['idCategory'];
 
       const loading = await this.loadingController.create({
       message: this.translate.instant('label.loading'),
@@ -63,9 +68,6 @@ export class ListProductsPage {
       this.navController.navigateForward('categories');
     }
   }
-
-  
-
 
   goToProduct(product: Product) {
     this.navParams.data['product'] = product;

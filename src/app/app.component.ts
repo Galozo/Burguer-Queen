@@ -3,6 +3,7 @@ import { Device } from '@capacitor/device';
 import { Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ToolbarComponent } from './shared/toolbar/toolbar.component';
+import { LoginComponent } from './shared/login/login.component';
 
 @Component({
   selector: 'app-root',
@@ -35,5 +36,6 @@ export class AppComponent {
     this.load = true;
 
     ToolbarComponent
+    LoginComponent
   }
 }

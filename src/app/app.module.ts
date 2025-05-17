@@ -15,6 +15,12 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { NgxsModule } from '@ngxs/store';
 import { CategoriesState } from './state/categories/categories.state';
 import { ProductsState } from './state/products/products.state';
+import { AuthState } from './state/auth/auth.state';
+import { LoginComponent } from './shared/login/login.component';
+import { UsersState } from './state/users/users.state';
+import { CreateAccountComponent } from './shared/create-account/create-account.component';
+import { ListProductsOrderComponent } from './shared/list-products-order/list-products-order.component';
+
 
 
 
@@ -39,10 +45,15 @@ export function HttpLoaderFactory(http: HttpClient){
       }),
       NgxsModule.forRoot([
         CategoriesState,
-        ProductsState
+        ProductsState,
+        AuthState,
+        UsersState
       ]),
       ToolbarComponent,
       FooterComponent,
+      LoginComponent,
+      CreateAccountComponent,
+      ListProductsOrderComponent
 
   ],
   providers: [
