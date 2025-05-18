@@ -12,6 +12,13 @@
           <ion-item>
             <ion-label class="ion-text-wrap"> {{quantityProduct.product.name | translate}} </ion-label>
           </ion-item>
+
+          <ion-item *ngIf="quantityProduct.product.extras">
+            <ul>
+              <li *ngFor="let optionSelected of quantityProduct.product.extras | extrasSelected"> {{optionSelected}} </li>
+            </ul>
+          </ion-item>
+
           <ion-card>
             <ion-card-content>
               <ion-item lines="none">

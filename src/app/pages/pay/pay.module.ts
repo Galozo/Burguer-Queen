@@ -7,6 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { PayPageRoutingModule } from './pay-routing.module';
 
 import { PayPage } from './pay.page';
+import { TranslateModule } from '@ngx-translate/core';
+import { LoginComponent } from 'src/app/shared/login/login.component';
+import { CreateAccountComponent } from 'src/app/shared/create-account/create-account.component';
 
 @NgModule({
   imports: [
@@ -14,7 +17,10 @@ import { PayPage } from './pay.page';
     FormsModule,
     IonicModule,
     PayPageRoutingModule,
-    PayPage
+    PayPage,
+    TranslateModule.forChild(),
+    LoginComponent,
+    CreateAccountComponent
   ],
   declarations: []
 })
